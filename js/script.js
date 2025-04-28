@@ -147,7 +147,7 @@ const choosePlayer = (function () {
                 body.gameOption.taskLevel = level.toUpperCase(); // ("EASY", "SIMPLE", "HARD")
             }
 
-            const apiUrl = 'http://192.168.1.116:8080/api/v1/start';
+            const apiUrl = 'https://chooser-back.onrender.com/api/v1/start';
 
             const response = await fetch(apiUrl, {
                 method: 'POST',
