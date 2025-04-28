@@ -1,17 +1,15 @@
-// Получаем элементы формы
 const modeSelect = document.getElementById("mode");
 const levelSelect = document.getElementById("level");
 const timerInput = document.getElementById("timer");
-const eliminationCheckbox = document.getElementById("elimination");
 const backgroundMusicToggle = document.getElementById("background-music-toggle");
 
-// disable if random mode on
 const toggleOptions = () => {
     const isRandomMode = modeSelect.value === "random";
+    console.log("toggleOptions called, random mode:", isRandomMode);
 
     levelSelect.disabled = isRandomMode;
     timerInput.disabled = isRandomMode;
-    eliminationCheckbox.disabled = isRandomMode;
+
 };
 
 const timerConstraint = () => {
@@ -19,12 +17,17 @@ const timerConstraint = () => {
         timerInput.value = 100
 }
 
-// state storage
 const saveSettingsState = () => {
     localStorage.setItem('mode', modeSelect.value);
     localStorage.setItem('level', levelSelect.value);
     localStorage.setItem('timer', timerInput.value);
-    localStorage.setItem('elimination', eliminationCheckbox.checked);
+    localStorage.setItem('backgroundMusic', backgroundMusicToggle.checked);
+    
+    console.log('Настройки сохранены в localStorage:', {
+        mode: modeSelect.value,
+        level: levelSelect.value,
+        timer: timerInput.value
+    });
 };
 
 const loadSettingsState = () => {
@@ -32,19 +35,30 @@ const loadSettingsState = () => {
         modeSelect.value = localStorage.getItem('mode');
         levelSelect.value = localStorage.getItem('level');
         timerInput.value = localStorage.getItem('timer');
-        eliminationCheckbox.checked = JSON.parse(localStorage.getItem('elimination'));
-        backgroundMusicToggle.checked = JSON.parse(localStorage.getItem('backgroundMusic'));
+        backgroundMusicToggle.checked = localStorage.getItem('backgroundMusic') === 'true';
+        
+        console.log('Настройки загружены из localStorage:', {
+            mode: localStorage.getItem('mode'),
+            modeSelectValue: modeSelect.value
+        });
     }
     toggleOptions();
 };
 
+document.addEventListener('DOMContentLoaded', () => {
+    const settingsModal = document.getElementById('settingsModal');
+    
+    settingsModal.addEventListener('shown.bs.modal', () => {
+        console.log('Модальное окно открыто, применяю текущие настройки');
+        toggleOptions();
+    });
+});
 
 levelSelect.addEventListener("change", saveSettingsState);
 modeSelect.addEventListener("change",() => {
         toggleOptions();
         saveSettingsState();
 });
-eliminationCheckbox.addEventListener("change", saveSettingsState);
 
 window.addEventListener("load", loadSettingsState);
 
